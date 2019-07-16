@@ -25,12 +25,12 @@
             ],
             "styles": [
               "src/styles.css",
-              "src/assets/css/bootstrap.min.css"
+              "../Test1WebStorm/node_modules/bootstrap/dist/css/bootstrap.min.css"
             ],
             "scripts": [
-              "src/assets/js/jquery-3.3.1.slim.min.js",
-              "src/assets/js/popper.min.js",
-              "src/assets/js/bootstrap.min.js"
+              "../Test1WebStorm/node_modules/jquery/dist/jquery.slim.min.js",
+              "../Test1WebStorm/node_modules/popper.js/dist/umd/popper.min.js",
+              "../Test1WebStorm/node_modules/bootstrap/dist/js/bootstrap.min.js"
             ]
           },
           "configurations": {
