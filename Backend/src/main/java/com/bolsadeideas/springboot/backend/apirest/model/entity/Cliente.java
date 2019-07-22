@@ -23,6 +23,11 @@ public class Cliente implements Serializable {
         return id;
     }
 
+    @PrePersist
+    public void prePersist(){
+        createdAt = new Date();
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
