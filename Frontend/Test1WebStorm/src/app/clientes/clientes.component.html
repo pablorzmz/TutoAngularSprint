@@ -1,33 +1,47 @@
-<div class="card border-primary mb-3 my-3">
+<div class="card mb-3 my-3">
   <div class="card-header">
     Clientes
   </div>
-  <div class="card-body text-primary">
+  <div class="card-body text-dark">
     <h5 class="card-title">
       Listado de clientes
     </h5>
     <div class="my-2 text-left">
       <button class="btn btn-primary btn-rounded" type="button" [routerLink]="['/clientes/form']">Crear cliente</button>
     </div>
-    <table class="table table-bordered table-striped">
-      <thead>
+    <div *ngIf="clientes?.length==0" class="alert alert-info">
+      No hay registros en la base de datos.
+    </div>
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover table-light" *ngIf="clientes?.length>0">
+        <thead>
         <tr>
-          <th> id</th>
-          <th> nombre </th>
-          <th> apellido </th>
-          <th> email </th>
-          <th> fecha </th>
+          <th> Id</th>
+          <th> Nombre </th>
+          <th> Apellidos </th>
+          <th> Email </th>
+          <th> Fecha </th>
+          <th> Editar </th>
+          <th> Eliminar </th>
         </tr>
-      </thead>
-      <tbody>
+        </thead>
+        <tbody>
         <tr *ngFor="let c of clientes">
           <td>{{c.id}}</td>
           <td>{{c.nombre}}</td>
           <td>{{c.apellido}}</td>
           <td>{{c.email}}</td>
           <td>{{c.createdAt}}</td>
+          <td class="text-center">
+            <button class="btn btn-primary" type="editar" name="button" [routerLink]="['/clientes/form', c.id]">Editar
+            </button>
+          </td>
+          <td class="text-center">
+            <button class="btn btn-danger" type="eliminar" name="button" (click)="delete(c)">Eliminar</button>
+          </td>
         </tr>
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
