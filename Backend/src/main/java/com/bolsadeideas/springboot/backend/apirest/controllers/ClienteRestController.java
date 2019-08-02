@@ -99,9 +99,20 @@ public class ClienteRestController {
     }
 
     @DeleteMapping("/clientes/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id)
+    public ResponseEntity<?> delete(@PathVariable Long id)
     {
-        clienteService.delete(id);
+        Map<String, Object> response = new HashMap<>();
+
+        try{
+            // Spring crud repository ya valida que el id sea valido, Si no lo es, se cae
+            clienteService.delete(id);
+        }catch (DataAccessException ex)
+        {
+            response.put("mensaje","Error al eliminar el cliente en la base de datos.");
+            response.put("error",ex.getMessage().concat(": ".concat(ex.getMostSpecificCause().getMessage())));
+            return new ResponseEntity<Map<String, Object>>(response,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        response.put("mensaje","Cliente eliminado con éxito!");
+        return new ResponseEntity<Map<String, Object>>(response,HttpStatus.OK);
     }
 }

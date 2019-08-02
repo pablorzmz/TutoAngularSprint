@@ -51,7 +51,7 @@ export class FormComponent implements OnInit {
         this.router.navigate(['/clientes']);
         Swal.fire(
           'Cliente actualizado',
-          `Cliente ${cliente.nombre} actualizado con éxito`,
+          `Cliente ${this.cliente.nombre} actualizado con éxito`,
           'success'
         );
       }
