@@ -2,16 +2,22 @@ package com.bolsadeideas.springboot.backend.apirest.controllers;
 
 import com.bolsadeideas.springboot.backend.apirest.model.entity.Cliente;
 import com.bolsadeideas.springboot.backend.apirest.services.IClienteService;
-import net.bytebuddy.description.type.TypeDescription;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -25,6 +31,12 @@ public class ClienteRestController {
     public List<Cliente> index()
     {
        return clienteService.findAll();
+    }
+
+
+    @GetMapping("/clientes/page/{page}")
+    public Page<Cliente> index(@PathVariable int page) {
+        return this.clienteService.findAll( PageRequest.of(page, 5));
     }
 
     @GetMapping("/clientes/{id}")
@@ -48,10 +60,30 @@ public class ClienteRestController {
     }
 
     @PostMapping("/clientes")
-    public ResponseEntity<?> create(@RequestBody Cliente cliente)
+    public ResponseEntity<?> create(@Valid @RequestBody Cliente cliente, BindingResult result)
     {
         Cliente clienteNuevo = null;
         Map<String,Object> response = new HashMap<>();
+
+        // Errores de validación
+        if (result.hasErrors()){
+
+            /*
+            // Forma vieja de hacerlo
+            List<String> errors = new ArrayList<>();
+            for (FieldError err: result.getFieldErrors()) {
+                errors.add( "El campo '" +  err.getField() + "' " + err.getDefaultMessage());
+            }
+            */
+
+            List<String> errors = result.getFieldErrors().stream().map(
+                    e -> "El campo '" + e.getField() + "' " + e.getDefaultMessage())
+                    .collect(Collectors.toList());
+
+            response.put("errors", errors);
+            return new ResponseEntity<Map<String,Object>>(response, HttpStatus.BAD_REQUEST);
+        }
+
         try{
             clienteNuevo = clienteService.save(cliente);
         }catch (DataAccessException ex){
@@ -66,15 +98,29 @@ public class ClienteRestController {
     }
 
     @PutMapping("/clientes/{id}")
-    public ResponseEntity<?> update(@RequestBody  Cliente cliente, @PathVariable Long id )
-    {
+    public ResponseEntity<?> update(@Valid @RequestBody Cliente cliente, BindingResult result, @PathVariable Long id) {
+
         Cliente clienteActual = null;
         Cliente clienteActualizado = null;
         Map<String, Object> response = new HashMap<>();
 
+        if (result.hasErrors()){
+            // Forma vieja de hacerlo
+            List<String> errors = new ArrayList<>();
+            for (FieldError err: result.getFieldErrors()) {
+                errors.add( "El campo '" +  err.getField() + "' " + err.getDefaultMessage());
+                System.out.println("\n\n\nEl campo '" +  err.getField() + "' " + err.getDefaultMessage());
+            }
+            response.put("errors", errors);
+            return new ResponseEntity<Map<String,Object>>(response, HttpStatus.BAD_REQUEST);
+        }else{
+            System.out.println("\n\n\n No hay errores");
+        }
+
         clienteActual = clienteService.findById(id);
 
         if (clienteActual == null){
+            System.out.println("\n\n\n Cliente nulll");
             response.put("mensaje","Error: no se pudo editar. El cliente con id ".concat(id.toString().concat(" no existe.")));
             return new ResponseEntity<Map<String,Object>>(response,HttpStatus.NOT_FOUND);
         }
@@ -88,6 +134,7 @@ public class ClienteRestController {
             clienteActualizado = clienteService.save(clienteActual);
 
         }catch (DataAccessException ex){
+            System.out.println("Error al actualizar el cliente en la base de datos.");
             response.put("mensaje","Error al actualizar el cliente en la base de datos.");
             response.put("error",ex.getMessage().concat(": ".concat(ex.getMostSpecificCause().getMessage())));
             return new ResponseEntity<Map<String,Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -95,6 +142,7 @@ public class ClienteRestController {
 
         response.put("mensaje","Cliente actualizado con éxito!");
         response.put("cliente",clienteActualizado);
+        System.out.println("Cliente actualizado con éxito!");
         return new ResponseEntity<Map<String,Object>>(response, HttpStatus.CREATED);
     }
 

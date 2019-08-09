@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {Cliente} from './cliente';
 import {ClienteService} from './cliente.service';
 import Swal from 'sweetalert2';
+import {tap} from 'rxjs/operators';
+import {ActivatedRoute} from '@angular/router';
 
 
 @Component({
@@ -11,13 +13,30 @@ import Swal from 'sweetalert2';
 export class ClientesComponent implements OnInit {
 
   clientes: Cliente[];
-  constructor( private clienteService: ClienteService) {
+  constructor(
+    private clienteService: ClienteService,
+    private activatedRoute: ActivatedRoute) {
   }
 
   ngOnInit() {
-    this.clienteService.getClientes().subscribe(
-      clientes => this.clientes = clientes
-    );
+    this.activatedRoute.paramMap.subscribe(params => {
+      // operador suma convierte en número
+      let page: number = +params.get('page');
+      // Para la primera pagina no sirve el parametro
+      if (!page) {
+        page = 0;
+      }
+      this.clienteService.getClientes(page).pipe(
+        tap( (response: any) => {
+          console.log('ClientesComponent: Tap 3');
+          (response.content as Cliente[]).forEach( cl => {
+            console.log(cl.createdAt);
+          });
+        })
+      ).subscribe(
+        (response: any) => this.clientes = (response.content as Cliente[])
+      );
+    });
   }
 
   delete(cliente: Cliente): void {
