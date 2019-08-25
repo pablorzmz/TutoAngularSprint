@@ -7,6 +7,7 @@ export const CLIENTES: Cliente[] = [
     id:  1,
     createdAt:  '02/12/1996',
     email: 'hola@gmail.com',
+    foto: ''
   },
   {
     nombre: 'Juan',
@@ -14,5 +15,6 @@ export const CLIENTES: Cliente[] = [
     id:  1,
     createdAt:  '02/19/1676',
     email: 'hola@yahoo.com',
+    foto: ''
   }
 ];

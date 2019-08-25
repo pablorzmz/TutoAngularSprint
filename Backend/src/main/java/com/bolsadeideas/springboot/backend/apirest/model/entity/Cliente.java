@@ -3,6 +3,7 @@ package com.bolsadeideas.springboot.backend.apirest.model.entity;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
@@ -25,21 +26,28 @@ public class Cliente implements Serializable {
 
     @NotEmpty(message = "No puede ser vacío")
     @Email(message = "No es una dirección de correo válida.")
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = false)
     private String email;
 
     @Column(name = "create_at")
     @Temporal(TemporalType.DATE)
+    @NotNull(message = "No puede ser nula.")
     private Date createdAt;
+
+
+    private String foto;
 
     public Long getId() {
         return id;
     }
 
+    /*
+    // Ahora se va a manejar en el formulario por lo que no se hace automatico.
     @PrePersist
     public void prePersist(){
         createdAt = new Date();
     }
+    */
 
     public void setId(Long id) {
         this.id = id;
@@ -70,7 +78,15 @@ public class Cliente implements Serializable {
     }
 
     public Date getCreatedAt() {
-        return createdAt;
+        return this.createdAt;
+    }
+
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
     }
 
     public void setCreatedAt(Date createdAt) {
