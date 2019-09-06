@@ -1,6 +1,7 @@
 package com.bolsadeideas.springboot.backend.apirest.controllers;
 
 import com.bolsadeideas.springboot.backend.apirest.model.entity.Cliente;
+import com.bolsadeideas.springboot.backend.apirest.model.entity.Region;
 import com.bolsadeideas.springboot.backend.apirest.services.IClienteService;
 import com.bolsadeideas.springboot.backend.apirest.services.IUploadFileService;
 import org.slf4j.Logger;
@@ -140,6 +141,7 @@ public class ClienteRestController {
             clienteActual.setNombre(cliente.getNombre());
             clienteActual.setEmail(cliente.getEmail());
             clienteActual.setCreatedAt(cliente.getCreatedAt());
+            clienteActual.setRegion(cliente.getRegion());
 
             // Save también hace la actualización (operación merge)
             clienteActualizado = clienteService.save(clienteActual);
@@ -229,5 +231,11 @@ public class ClienteRestController {
         cabecera.add(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=\"" + recurso.getFilename() + "\"");
 
         return  new ResponseEntity<Resource>(recurso, cabecera, HttpStatus.OK);
+    }
+
+    @GetMapping("/clientes/regiones")
+    public List<Region> listarRegiones()
+    {
+        return clienteService.findAllRegiones();
     }
 }

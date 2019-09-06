@@ -57,9 +57,19 @@
       <div class="form-group row">
         <label for="createAt" class="col-form-label col-sm-2">Fecha</label>
         <div class="col-sm-6">
-          <input [matDatepicker]="myDatepicker" class="form-control" [(ngModel)]="cliente.createdAt" name="createAt" style="display: inline; width: 300px">
+          <input [matDatepicker]="myDatepicker" class="form-control" [(ngModel)]="cliente.createdAt" name="createAt" style="display: inline; width: 290px">
           <mat-datepicker-toggle  [for]="myDatepicker"></mat-datepicker-toggle>
           <mat-datepicker touchUi #myDatepicker></mat-datepicker>
+        </div>
+      </div>
+      <!-- Regiones -->
+      <div class="form-group row">
+        <label for="region" class="col-form-label col-sm-2">Región</label>
+        <div class="col-sm-6">
+          <select [compareWith]="compararRegion" class="form-control" [(ngModel)]="cliente.region" name="region" style="width: 500px">
+            <option [ngValue]="undefined">--- Seleccionar una región ---</option>
+            <option *ngFor="let r of regiones" [ngValue]="r">{{r.nombre}}</option>
+          </select>
         </div>
       </div>
       <!-- Botón -->

@@ -1,5 +1,7 @@
 package com.bolsadeideas.springboot.backend.apirest.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
@@ -34,12 +36,18 @@ public class Cliente implements Serializable {
     @NotNull(message = "No puede ser nula.")
     private Date createdAt;
 
-
     private String foto;
 
     public Long getId() {
         return id;
     }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "region_id")
+    @NotNull(message = "La región no puede ser vacía.")
+    @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
+    private Region region;
+
 
     /*
     // Ahora se va a manejar en el formulario por lo que no se hace automatico.
@@ -48,6 +56,14 @@ public class Cliente implements Serializable {
         createdAt = new Date();
     }
     */
+
+    public Region getRegion() {
+        return region;
+    }
+
+    public void setRegion(Region region) {
+        this.region = region;
+    }
 
     public void setId(Long id) {
         this.id = id;

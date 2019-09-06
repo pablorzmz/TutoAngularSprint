@@ -6,6 +6,7 @@ import {HttpClient, HttpEvent, HttpHeaders, HttpRequest} from '@angular/common/h
 import { map, catchError, tap } from 'rxjs/operators';
 import Swal from 'sweetalert2';
 import {Router} from '@angular/router';
+import {Region} from './region';
 
 // import {CLIENTES} from './clientes.json'
 
@@ -49,6 +50,10 @@ export class ClienteService {
     );
     // return this.http.get<Cliente[]>(this.urlEndPoint);
     // return of(CLIENTES);
+  }
+
+  getRegiones(): Observable<Region[]> {
+    return this.http.get<Region[]>(this.urlEndPoint + '/regiones');
   }
 
   create(cliente: Cliente): Observable<Cliente> {
